@@ -1,0 +1,250 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:MITM.me_app.Models"
+             xmlns:viewModels="clr-namespace:MITM.me_app.ViewModels"
+             x:Class="MITM.me_app.MainPage"
+             BackgroundColor="#121212">
+    
+    <Grid RowDefinitions="Auto, *, Auto, Auto">
+
+        <!-- 1. HEADER: Статусы клиентов -->
+        <Border Grid.Row="0" 
+                Background="#161616" 
+                StrokeThickness="0"
+                Padding="15,10,15,10">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.5" />
+            </Border.Shadow>
+            
+            <Grid ColumnDefinitions="*, *">
+                <!-- Статус Клиента 1 (Слева) -->
+                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                    <Label Text="Client 1" TextColor="#E0E0E0" FontAttributes="Bold" FontSize="14" />
+                    <Label Text="{Binding Client1Status}" TextColor="#00FF41" FontFamily="monospace" FontSize="12" />
+                </VerticalStackLayout>
+                
+                <!-- Статус Клиента 2 (Справа) -->
+                <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="End">
+                    <Label Text="Client 2" TextColor="#E0E0E0" FontAttributes="Bold" FontSize="14" HorizontalOptions="End" />
+                    <Label Text="{Binding Client2Status}" TextColor="#FFCC00" FontFamily="monospace" FontSize="12" HorizontalOptions="End" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+        
+        <!-- 2. CHAT HISTORY -->
+        <CollectionView 
+            Grid.Row="1" 
+            x:Name="ChatCollectionView"
+            ItemsSource="{Binding Messages}"
+            Background="Transparent" 
+            SelectionMode="None"
+            Margin="0,10,0,0">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Message">
+                    <Grid Padding="0,4">
+                        <Border x:Name="MessageBubble"
+                                StrokeThickness="0"
+                                Padding="15,12"
+                                MaximumWidthRequest="300"
+                                Background="#2C2C2C"
+                                HorizontalOptions="Start"
+                                Margin="15,0,80,0"
+                                StrokeShape="RoundRectangle 16,16,16,4">
+                            
+                            <Border.Shadow>
+                                <Shadow Brush="Black" Offset="0,1" Radius="3" Opacity="0.4"/>
+                            </Border.Shadow>
+
+                            <Label Text="{Binding Text}"
+                                   FontSize="15"
+                                   LineBreakMode="WordWrap">
+                                <Label.Style>
+                                    <Style TargetType="Label">
+                                        <Setter Property="TextColor" Value="#E0E0E0" />
+                                        <Style.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding SenderClientId}" Value="2">
+                                                <Setter Property="TextColor" Value="#FFFFFF" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Label.Style>
+                            </Label>
+                            
+                            <Border.Triggers>   
+                                <DataTrigger TargetType="Border" Binding="{Binding SenderClientId}" Value="2">
+                                    <Setter Property="HorizontalOptions" Value="End"/>
+                                    <Setter Property="Margin" Value="80,0,15,0"/>
+                                    <Setter Property="Background" Value="#1565C0"/>
+                                    <Setter Property="StrokeShape" Value="RoundRectangle 16,16,4,16"/>
+                                </DataTrigger>
+                            </Border.Triggers>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- 3. ACTION BUTTONS: CONNECT CLIENTS + SEARCH -->
+        <Grid Grid.Row="2" 
+              ColumnDefinitions="*, *" 
+              ColumnSpacing="10"
+              Padding="15,5,15,5">
+    
+            <!-- Кнопка CONNECT CLIENTS -->
+            <Button Grid.Column="0"
+                    Text="CONNECT CLIENTS"
+                    FontFamily="monospace"
+                    TextColor="#E0E0E0"
+                    BackgroundColor="#2E7D5B"
+                    CornerRadius="8"
+                    HeightRequest="36"
+                    Padding="0"
+                    Command="{Binding ConnectCommand}">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" 
+                                 Binding="{Binding IsConnected}" 
+                                 Value="True">
+                        <Setter Property="Text" Value="DISCONNECT" />
+                        <Setter Property="BackgroundColor" Value="#3A1A1A" />
+                        <Setter Property="TextColor" Value="#FF3B30" />
+                        <Setter Property="Command" Value="{Binding DisconnectCommand}" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" 
+                                 Binding="{Binding IsConnecting}" 
+                                 Value="True">
+                        <Setter Property="Text" Value="Connecting..." />
+                        <Setter Property="BackgroundColor" Value="#2647ad" />
+                        <Setter Property="TextColor" Value="#5a83fc" />
+                        <Setter Property="Command" Value="{x:Null}" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" 
+                                 Binding="{Binding IsDisconnecting}" 
+                                 Value="True">
+                        <Setter Property="Text" Value="Disconnecting..." />
+                        <Setter Property="BackgroundColor" Value="#2647ad" />
+                        <Setter Property="TextColor" Value="#5a83fc" />
+                        <Setter Property="Command" Value="{x:Null}" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" 
+                                 Binding="{Binding IsConnected}" 
+                                 Value="False">
+                        <Setter Property="Text" Value="CONNECT CLIENTS" />
+                        <Setter Property="BackgroundColor" Value="#2E7D5B" />
+                        <Setter Property="TextColor" Value="#E0E0E0" />
+                        <Setter Property="Command" Value="{Binding ConnectCommand}" />
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
+
+            <!-- Кнопка SEARCH / LEAVE DIALOG -->
+            <Button Grid.Column="1"
+                    Text="SEARCH" 
+                    FontFamily="monospace"
+                    Command="{Binding SearchCommand}" 
+                    BackgroundColor="#2C2C2C" 
+                    TextColor="#E0E0E0" 
+                    CornerRadius="8" 
+                    HeightRequest="36"
+                    Padding="0">
+        
+                <Button.Triggers>
+                    <!-- Если бот в диалоге, превращаем кнопку в LEAVE DIALOG -->
+                    <DataTrigger TargetType="Button" 
+                                 Binding="{Binding CanLeaveDialog}" 
+                                 Value="True">
+                        <Setter Property="Text" Value="LEAVE DIALOG" />
+                        <Setter Property="Command" Value="{Binding LeaveDialogCommand}" />
+                        <Setter Property="BackgroundColor" Value="#3A1A1A" />
+                        <Setter Property="TextColor" Value="#FF3B30" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button" 
+                                 Binding="{Binding IsSearching}" 
+                                 Value="True">
+                        <Setter Property="Text" Value="Searching..." />
+                        <Setter Property="Command" Value="{x:Null}"/>
+                        <Setter Property="BackgroundColor" Value="#2647ad" />
+                        <Setter Property="TextColor" Value="#5a83fc" />
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
+        </Grid>
+
+        <!-- 4. INPUT AREA -->
+        <Grid Grid.Row="3" 
+              ColumnDefinitions="*, *" 
+              Padding="15,5,15,20" 
+              ColumnSpacing="15">
+            
+            <!-- Client 1 -->
+            <Border Grid.Column="0" 
+                    Background="#1E1E1E" 
+                    Stroke="#333333" 
+                    StrokeThickness="1" 
+                    StrokeShape="RoundRectangle 20" 
+                    Padding="4">
+                
+                <Grid ColumnDefinitions="*, Auto">
+                    <Entry Grid.Column="0" 
+                           ClassId="1" 
+                           Text="{Binding InputText, Mode=TwoWay}" 
+                           Placeholder="Client 1..." 
+                           PlaceholderColor="#888888" 
+                           TextColor="#E0E0E0" 
+                           Completed="OnCompleted" 
+                           TextChanged="OnTextChanged" 
+                           Background="Transparent" 
+                           Margin="10,0" />
+                        
+                    <Button Grid.Column="1" 
+                            Text="➤" 
+                            FontAttributes="Bold" 
+                            TextColor="#1E1E1E" 
+                            BackgroundColor="#E0E0E0" 
+                            CornerRadius="16" 
+                            WidthRequest="40" 
+                            HeightRequest="40" 
+                            Padding="0" 
+                            Command="{Binding SendCommand}" 
+                            CommandParameter="{StaticResource One}" />
+                        
+                </Grid>
+            </Border>
+
+            <!-- Client 2 -->
+            <Border Grid.Column="1" 
+                    Background="#1E1E1E" 
+                    Stroke="#333333" 
+                    StrokeThickness="1" 
+                    StrokeShape="RoundRectangle 20" 
+                    Padding="4">
+                
+                <Grid ColumnDefinitions="*, Auto">
+                    <Entry Grid.Column="0" 
+                           ClassId="2" 
+                           Text="{Binding InputText2, Mode=TwoWay}" 
+                           Placeholder="Client 2..." 
+                           PlaceholderColor="#888888" 
+                           TextColor="#E0E0E0" 
+                           Completed="OnCompleted" 
+                           TextChanged="OnTextChanged" 
+                           Background="Transparent" 
+                           Margin="10,0" />
+                        
+                    <Button Grid.Column="1" 
+                            Text="➤" 
+                            FontAttributes="Bold" 
+                            TextColor="#FFFFFF" 
+                            BackgroundColor="#1565C0" 
+                            CornerRadius="16" 
+                            WidthRequest="40" 
+                            HeightRequest="40" 
+                            Padding="0" 
+                            Command="{Binding SendCommand}" 
+                            CommandParameter="{StaticResource Two}" />
+                        
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>

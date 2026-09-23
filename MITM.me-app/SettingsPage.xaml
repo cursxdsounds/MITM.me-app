@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MITM.me_app.SettingsPage"
+             BackgroundColor="#121212">
+
+    <ContentPage.Resources>
+        <!-- Стиль для кнопок-опций (неактивная) -->
+        <Style x:Key="OptionButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="#B0B0B0" />
+            <Setter Property="TextColor" Value="#1A1A1A" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="HeightRequest" Value="36" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="BorderWidth" Value="0" />
+        </Style>
+
+        <!-- Стиль для активной кнопки (синяя) -->
+        <Style x:Key="ActiveOptionButton" TargetType="Button" BasedOn="{StaticResource OptionButton}">
+            <Setter Property="BackgroundColor" Value="#1565C0" />
+            <Setter Property="TextColor" Value="#FFFFFF" />
+        </Style>
+
+        <!-- Заголовок блока -->
+        <Style x:Key="SectionHeader" TargetType="Label">
+            <Setter Property="TextColor" Value="#FFFFFF" />
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+
+        <!-- Обычная (широкая) кнопка опции -->
+        <Style x:Key="WideOptionButton" TargetType="Button" BasedOn="{StaticResource OptionButton}">
+            <Setter Property="HorizontalOptions" Value="Fill" />
+        </Style>
+
+        <!-- Заголовок клиента -->
+        <Style x:Key="ClientHeader" TargetType="Label">
+            <Setter Property="TextColor" Value="#FFFFFF" />
+            <Setter Property="FontSize" Value="17" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
+
+        <!-- Поле ввода -->
+        <Style x:Key="InputEntry" TargetType="Entry">
+            <Setter Property="BackgroundColor" Value="#1E1E1E" />
+            <Setter Property="TextColor" Value="#FFFFFF" />
+            <Setter Property="PlaceholderColor" Value="#808080" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="HeightRequest" Value="40" />
+        </Style>
+
+        <!-- Подпись поля ввода -->
+        <Style x:Key="InputLabel" TargetType="Label">
+            <Setter Property="TextColor" Value="#B0B0B0" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+        </Style>
+
+        <!-- Небольшая кнопка "Сохранить" -->
+        <Style x:Key="SaveButton" TargetType="Button">
+            <Setter Property="BackgroundColor" Value="#2E7D32" />
+            <Setter Property="TextColor" Value="#FFFFFF" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="HeightRequest" Value="34" />
+            <Setter Property="Padding" Value="16,0" />
+            <Setter Property="BorderWidth" Value="0" />
+            <Setter Property="HorizontalOptions" Value="End" />
+            <Setter Property="Margin" Value="0,4,0,0" />
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="15,20,15,30" Spacing="20">
+
+            <!-- ===================== ВЫБОР КЛИЕНТА ===================== -->
+            <VerticalStackLayout Spacing="0">
+                <Label Text="Настройки клиента:" Style="{StaticResource SectionHeader}" />
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button Grid.Column="0"
+                            Text="Клиент 1"
+                            Command="{Binding SelectClientCommand}"
+                            CommandParameter="Client1"
+                            Style="{StaticResource ActiveOptionButton}" />
+                    <Button Grid.Column="1"
+                            Text="Клиент 2"
+                            Command="{Binding SelectClientCommand}"
+                            CommandParameter="Client2"
+                            Style="{StaticResource OptionButton}" />
+                </Grid>
+            </VerticalStackLayout>
+
+            <!-- ===================== ТЕМА ОБЩЕНИЯ (ОБЩАЯ ДЛЯ ВСЕГО ПРИЛОЖЕНИЯ) ===================== -->
+            <VerticalStackLayout Spacing="0">
+                <Label Text="Тема общения (общая для приложения):"
+                       Style="{StaticResource SectionHeader}" />
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                    <Button Grid.Column="0"
+                            Text="Общение"
+                            Command="{Binding SelectTopicCommand}"
+                            CommandParameter="Общение"
+                            Style="{StaticResource ActiveOptionButton}" />
+                    <Button Grid.Column="1"
+                            Text="Фильтр 18+"
+                            Command="{Binding SelectTopicCommand}"
+                            CommandParameter="Фильтр 18+"
+                            Style="{StaticResource OptionButton}" />
+                    <Button Grid.Column="2"
+                            Text="Ролка"
+                            Command="{Binding SelectTopicCommand}"
+                            CommandParameter="Ролка"
+                            Style="{StaticResource OptionButton}" />
+                </Grid>
+            </VerticalStackLayout>
+
+            <!-- ===================== НАСТРОЙКИ КЛИЕНТА 1 ===================== -->
+            <VerticalStackLayout Spacing="20"
+                                 IsVisible="{Binding IsClient1Selected}">
+
+                <Label Text="Клиент 1" Style="{StaticResource ClientHeader}" />
+
+                <!-- ===== TOKEN / USERAGENT ===== -->
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Token:" Style="{StaticResource InputLabel}" />
+                    <Entry Text="{Binding Client1Token}"
+                           Placeholder="Введите Token"
+                           Style="{StaticResource InputEntry}" />
+
+                    <Label Text="UserAgent:" Style="{StaticResource InputLabel}" />
+                    <Entry Text="{Binding Client1UserAgent}"
+                           Placeholder="Введите UserAgent"
+                           Style="{StaticResource InputEntry}" />
+
+                    <Button Text="Сохранить"
+                            Command="{Binding SaveCommand}"
+                            CommandParameter="1"
+                            Style="{StaticResource SaveButton}" />
+                </VerticalStackLayout>
+
+                <!-- ===== ПОЛ + ВОЗРАСТ ===== -->
+                <Grid ColumnDefinitions="*,*"
+                      RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                      ColumnSpacing="20"
+                      RowSpacing="20"
+                      IsVisible="{Binding IsCommunicationActive}">
+
+                    <Label Grid.Row="0" Grid.Column="0"
+                           Text="Ваш пол:"
+                           Style="{StaticResource SectionHeader}" />
+
+                    <Label Grid.Row="0" Grid.Column="1"
+                           Text="Пол собеседника:"
+                           Style="{StaticResource SectionHeader}" />
+
+                    <Grid Grid.Row="1" Grid.Column="0" ColumnDefinitions="*,*,*">
+                        <Button Grid.Column="0" Text="Нетко" Style="{StaticResource OptionButton}" />
+                        <Button Grid.Column="1" Text="М"     Style="{StaticResource ActiveOptionButton}" />
+                        <Button Grid.Column="2" Text="Ж"     Style="{StaticResource OptionButton}" />
+                    </Grid>
+
+                    <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,*,*">
+                        <Button Grid.Column="0" Text="Не важно" Style="{StaticResource OptionButton}" />
+                        <Button Grid.Column="1" Text="М"        Style="{StaticResource OptionButton}" />
+                        <Button Grid.Column="2" Text="Ж"        Style="{StaticResource ActiveOptionButton}" />
+                    </Grid>
+
+                    <Label Grid.Row="2" Grid.Column="0"
+                           Text="Ваш возраст:"
+                           Style="{StaticResource SectionHeader}" />
+
+                    <Label Grid.Row="2" Grid.Column="1"
+                           Text="Возраст собеседника:"
+                           Style="{StaticResource SectionHeader}" />
+
+                    <VerticalStackLayout Grid.Row="3" Grid.Column="0" Spacing="10">
+                        <Button Text="до 17 лет"        Style="{StaticResource WideOptionButton}" />
+                        <Button Text="от 18 до 21 года" Style="{StaticResource WideOptionButton}" />
+                        <Button Text="от 22 до 25 лет"  Style="{StaticResource WideOptionButton}" />
+                        <Button Text="от 26 до 35 лет"  Style="{StaticResource WideOptionButton}" />
+                        <Button Text="старше 36 лет"    Style="{StaticResource WideOptionButton}" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Row="3" Grid.Column="1" Spacing="10">
+                        <Button Text="до 17 лет"        Style="{StaticResource WideOptionButton}" />
+                        <Button Text="от 18 до 21 года" Style="{StaticResource WideOptionButton}" />
+                        <Button Text="от 22 до 25 лет"  Style="{StaticResource WideOptionButton}" />
+                        <Button Text="от 26 до 35 лет"  Style="{StaticResource WideOptionButton}" />
+                        <Button Text="старше 36 лет"    Style="{StaticResource WideOptionButton}" />
+                    </VerticalStackLayout>
+
+                    <Label Grid.Row="4" Grid.Column="0"
+                           Text="*Обязательно к выбору"
+                           TextColor="#FF3B30"
+                           FontSize="12"
+                           FontAttributes="Italic"
+                           HorizontalOptions="Center"
+                           Margin="0,4,0,0" />
+
+                    <Label Grid.Row="4" Grid.Column="1"
+                           Text="Можно несколько"
+                           TextColor="#B0B0B0"
+                           FontSize="12"
+                           FontAttributes="Italic"
+                           HorizontalOptions="Center"
+                           Margin="0,4,0,0" />
+                </Grid>
+            </VerticalStackLayout>
+
+            <!-- ===================== НАСТРОЙКИ КЛИЕНТА 2 ===================== -->
+            <VerticalStackLayout Spacing="20"
+                                 IsVisible="{Binding IsClient2Selected}">
+
+                <Label Text="Клиент 2" Style="{StaticResource ClientHeader}" />
+
+                <!-- ===== TOKEN / USERAGENT ===== -->
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Token:" Style="{StaticResource InputLabel}" />
+                    <Entry Text="{Binding Client2Token}"
+                           Placeholder="Введите Token"
+                           Style="{StaticResource InputEntry}" />
+
+                    <Label Text="UserAgent:" Style="{StaticResource InputLabel}" />
+                    <Entry Text="{Binding Client2UserAgent}"
+                           Placeholder="Введите UserAgent"
+                           Style="{StaticResource InputEntry}" />
+
+                    <Button Text="Сохранить"
+                            Command="{Binding SaveCommand}"
+                            CommandParameter="2"
+                            Style="{StaticResource SaveButton}" />
+                </VerticalStackLayout>
+
+                <!-- ===== ПОЛ + ВОЗРАСТ ===== -->
+                <Grid ColumnDefinitions="*,*"
+                      RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                      ColumnSpacing="20"
+                      RowSpacing="20"
+                      IsVisible="{Binding IsCommunicationActive}">
+
+                    <Label Grid.Row="0" Grid.Column="0"
+                           Text="Ваш пол:"
+                           Style="{StaticResource SectionHeader}" />
+
+                    <Label Grid.Row="0" Grid.Column="1"
+                           Text="Пол собеседника:"
+                           Style="{StaticResource SectionHeader}" />
+
+                    <Grid Grid.Row="1" Grid.Column="0" ColumnDefinitions="*,*,*">
+                        <Button Grid.Column="0" Text="Нетко" Style="{StaticResource OptionButton}" />
+                        <Button Grid.Column="1" Text="М"     Style="{StaticResource ActiveOptionButton}" />
+                        <Button Grid.Column="2" Text="Ж"     Style="{StaticResource OptionButton}" />
+                    </Grid>
+
+                    <Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="*,*,*">
+                        <Button Grid.Column="0" Text="Не важно" Style="{StaticResource OptionButton}" />
+                        <Button Grid.Column="1" Text="М"        Style="{StaticResource OptionButton}" />
+                        <Button Grid.Column="2" Text="Ж"        Style="{StaticResource ActiveOptionButton}" />
+                    </Grid>
+
+                    <Label Grid.Row="2" Grid.Column="0"
+                           Text="Ваш возраст:"
+                           Style="{StaticResource SectionHeader}" />
+
+                    <Label Grid.Row="2" Grid.Column="1"
+                           Text="Возраст собеседника:"
+                           Style="{StaticResource SectionHeader}" />
+
+                    <VerticalStackLayout Grid.Row="3" Grid.Column="0" Spacing="10">
+                        <Button Text="до 17 лет"        Style="{StaticResource WideOptionButton}" />
+                        <Button Text="от 18 до 21 года" Style="{StaticResource WideOptionButton}" />
+                        <Button Text="от 22 до 25 лет"  Style="{StaticResource WideOptionButton}" />
+                        <Button Text="от 26 до 35 лет"  Style="{StaticResource WideOptionButton}" />
+                        <Button Text="старше 36 лет"    Style="{StaticResource WideOptionButton}" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Row="3" Grid.Column="1" Spacing="10">
+                        <Button Text="до 17 лет"        Style="{StaticResource WideOptionButton}" />
+                        <Button Text="от 18 до 21 года" Style="{StaticResource WideOptionButton}" />
+                        <Button Text="от 22 до 25 лет"  Style="{StaticResource WideOptionButton}" />
+                        <Button Text="от 26 до 35 лет"  Style="{StaticResource WideOptionButton}" />
+                        <Button Text="старше 36 лет"    Style="{StaticResource WideOptionButton}" />
+                    </VerticalStackLayout>
+
+                    <Label Grid.Row="4" Grid.Column="0"
+                           Text="*Обязательно к выбору"
+                           TextColor="#FF3B30"
+                           FontSize="12"
+                           FontAttributes="Italic"
+                           HorizontalOptions="Center"
+                           Margin="0,4,0,0" />
+
+                    <Label Grid.Row="4" Grid.Column="1"
+                           Text="Можно несколько"
+                           TextColor="#B0B0B0"
+                           FontSize="12"
+                           FontAttributes="Italic"
+                           HorizontalOptions="Center"
+                           Margin="0,4,0,0" />
+                </Grid>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

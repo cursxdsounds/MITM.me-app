@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:MITM.me_app.Models"
+             xmlns:viewModels="clr-namespace:MITM.me_app.ViewModels"
+             x:Class="MITM.me_app.LogsPage"
+             BackgroundColor="#0A0A0A" >
+
+    <Grid RowDefinitions="Auto, *">
+        
+        <!-- HEADER -->
+        <Border Grid.Row="0" 
+                Background="#161616" 
+                StrokeThickness="0"
+                Padding="20,15,20,15">
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,2" Radius="4" Opacity="0.5" />
+            </Border.Shadow>
+            <Grid ColumnDefinitions="*, Auto">
+                <Label Text="System Logs_" 
+                       FontSize="18" 
+                       FontFamily="monospace"
+                       FontAttributes="Bold" 
+                       TextColor="#00FF41" 
+                       VerticalOptions="Center" />
+                
+                <!-- Кнопка очистки логов -->
+                <Button Grid.Column="1" 
+                        Text="CLEAR" 
+                        FontFamily="monospace"
+                        TextColor="#FF3B30"
+                        BackgroundColor="#2A0A0A"
+                        CornerRadius="4"
+                        HeightRequest="32"
+                        Padding="10,0"
+                        Command="{Binding ClearLogsCommand}" />
+            </Grid>
+        </Border>
+
+        <!-- TERMINAL AREA -->
+        <CollectionView 
+            Grid.Row="1" 
+            ItemsSource="{x:Static viewModels:LogsViewModel.Logs}"
+            Background="Transparent"
+            SelectionMode="None"
+            Margin="10,10,10,0" >
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:LogEntry">
+                    <Grid ColumnDefinitions="Auto, Auto, *" Padding="0,4">
+                        
+                        <!-- Время -->
+                        <Label Grid.Column="0" 
+                               Text="{Binding Timestamp, StringFormat='[{0:HH:mm:ss}] '}" 
+                               TextColor="#666666" 
+                               FontFamily="monospace"
+                               FontSize="13"/>
+
+                        <!-- Уровень лога (Цвет меняется через триггеры) -->
+                        <Label Grid.Column="1" 
+                               Text="{Binding Level}" 
+                               FontFamily="monospace"
+                               FontAttributes="Bold"
+                               FontSize="13"
+                               Margin="0,0,10,0"
+                               WidthRequest="60">
+                            <Label.Style>
+                                <Style TargetType="Label">
+                                    <Setter Property="TextColor" Value="#007AFF" /> <!-- INFO по умолчанию -->
+                                    <Style.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding Level}" Value="WARNING">
+                                            <Setter Property="TextColor" Value="#FFCC00" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding Level}" Value="ERROR">
+                                            <Setter Property="TextColor" Value="#FF3B30" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Label" Binding="{Binding Level}" Value="CHATLOG">
+                                            <Setter Property="TextColor" Value="#B551F2" /> <!-- Спец. цвет для перехвата -->
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+
+                        <!-- Сообщение -->
+                        <Label Grid.Column="2" 
+                               Text="{Binding Message}" 
+                               TextColor="#E0E0E0" 
+                               FontFamily="monospace"
+                               FontSize="13"
+                               LineBreakMode="WordWrap"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

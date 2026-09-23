@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="MITM.me_app.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:MITM.me_app"
+    Title="MITM.me_app"
+    Shell.NavBarIsVisible="False">
+    
+    <TabBar>
+        <ShellContent Title="Chat"
+                      Icon="chat.png"
+                      ContentTemplate="{DataTemplate local:MainPage}"
+                      Route="MainPage" />
+        <ShellContent Title="Settings"
+                      Icon="gear.png"
+                      ContentTemplate="{DataTemplate local:SettingsPage}" 
+                      Route="SettingsPage" />
+        <ShellContent Title="Logs"
+                      Icon="log.png"
+                      ContentTemplate="{DataTemplate local:LogsPage}" 
+                      Route="LogsPage" />
+    </TabBar>
+
+</Shell>
