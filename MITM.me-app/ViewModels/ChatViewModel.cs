@@ -14,23 +14,25 @@ public partial class ChatViewModel : ObservableObject
     private Client client1;
     private Client client2;
 
-    [ObservableProperty] private bool canLeaveDialog;
+    [ObservableProperty]
+    public partial bool CanLeaveDialog { get; set; }
+    [ObservableProperty]
+    public partial bool IsSearching { get; set; }
 
-    [ObservableProperty] private bool isSearching;
-    
-    [ObservableProperty] private bool isConnected;
-    
-    [ObservableProperty] private bool isConnecting;
-    
-    [ObservableProperty] private bool isDisconnecting;
+    [ObservableProperty]
+    public partial bool IsConnected { get; set; }
+    [ObservableProperty]
+    public partial bool IsConnecting { get; set; }
+
+    [ObservableProperty]
+    public partial bool IsDisconnecting { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SendCommand))]
-    private string inputText = string.Empty;
-    
+    public partial string InputText { get; set; } = string.Empty;
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SendCommand))]
-    private string inputText2 = string.Empty;
+    public partial string InputText2 { get; set; } = string.Empty;
 
     public ChatViewModel()
     {
@@ -134,6 +136,7 @@ public partial class ChatViewModel : ObservableObject
         }
         finally
         {
+            LogsViewModel.AddLogEntry($"Clients Disconnected", Level.ChatLog, 0);
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 IsDisconnecting = false;
@@ -163,6 +166,7 @@ public partial class ChatViewModel : ObservableObject
         }
         finally
         {
+            LogsViewModel.AddLogEntry($"Clients Connected", Level.ChatLog, 0);
             MainThread.BeginInvokeOnMainThread(() =>
             {
                 IsConnecting = false;

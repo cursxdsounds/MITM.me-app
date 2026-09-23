@@ -6,10 +6,17 @@ namespace MITM.me_app.ViewModels;
 
 public partial class SettingsViewModel(ISettingsService settingsService) : ObservableObject
 {
-    [ObservableProperty] private string? client1Token = string.Empty;
-    [ObservableProperty] private string? client1UserAgent = string.Empty;
-    [ObservableProperty] private string? client2Token = string.Empty;
-    [ObservableProperty] private string? client2UserAgent = string.Empty;
+    [ObservableProperty]
+    public partial string? Client1Token { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string? Client1UserAgent { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string? Client2Token { get; set; } = string.Empty;
+
+    [ObservableProperty]
+    public partial string? Client2UserAgent { get; set; } = string.Empty;
 
     [RelayCommand]
     private void Save(string clientId)

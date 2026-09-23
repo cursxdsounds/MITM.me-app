@@ -61,7 +61,7 @@ public sealed class Client : IDisposable
             Transport = TransportProtocol.WebSocket,
             ExtraHeaders = new Dictionary<string, string>
             {
-                { "User-Agent", UserAgent },
+                { "User-Agent", UserAgent! },
                 { "Origin", "https://nekto.me" },
             }
         });
@@ -155,7 +155,7 @@ public sealed class Client : IDisposable
         await socket.EmitAsync("action", [new 
         {
             data = CryptoUtils.GenerateWebAgent(
-                Token,
+                Token!,
                 userId, 
                 currentTimestamp
             ),
@@ -177,8 +177,8 @@ public sealed class Client : IDisposable
         await socket.EmitAsync("action", [new 
         {
             action = "auth.setFpt",
-            fpt = CryptoUtils.GenerateVisitorId(Token),
-            infoDataS = CryptoUtils.GenerateFpt(userId, CryptoUtils.GenerateVisitorId(Token)),
+            fpt = CryptoUtils.GenerateVisitorId(Token!),
+            infoDataS = CryptoUtils.GenerateFpt(userId, CryptoUtils.GenerateVisitorId(Token!)),
             token = Token
         }]);
     }
