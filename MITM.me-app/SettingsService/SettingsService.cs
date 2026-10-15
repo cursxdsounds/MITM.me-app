@@ -5,6 +5,7 @@ namespace MITM.me_app.SettingsService;
 
 public class SettingsService : ISettingsService
 {
+
     private const string ChatThemeKey = "chat_theme";
 
     public ChatTheme CurrentChatTheme
@@ -45,23 +46,15 @@ public class SettingsService : ISettingsService
     private static string UserAgentKey(int id) => $"ua_{id}";
     private static string TokenKey(int id) => $"token_{id}";
     
-    public async Task<string?> GetTokenAsync(int clientId)
-    {
-        return await SecureStorage.GetAsync(TokenKey(clientId));
-    }
+    public string? GetToken(int clientId) 
+        => Preferences.Get(TokenKey(clientId), null);
 
-    public async Task SetTokenAsync(int clientId, string token)
-    {
-        await SecureStorage.SetAsync(TokenKey(clientId), token);
-    }
+    public void SetToken(int clientId, string value) 
+        => Preferences.Set(TokenKey(clientId), value);
     
-    public async Task<string?> GetUserAgentAsync(int clientId)
-    {
-        return await SecureStorage.GetAsync(UserAgentKey(clientId));
-    }
+    public string? GetUserAgent(int clientId)
+        => Preferences.Get(UserAgentKey(clientId), null);
 
-    public async Task SetUserAgentAsync(int clientId, string token)
-    {
-        await SecureStorage.SetAsync(UserAgentKey(clientId), token);
-    }
+    public void SetUserAgent(int clientId, string value)
+        => Preferences.Set(UserAgentKey(clientId), value);
 }

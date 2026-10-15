@@ -21,14 +21,13 @@ public interface ISettingsService
     public Age? GetPartnerAge(int clientId);
     
     public void SetPartnerAge(int clientId, Age? value);
+    public string? GetToken(int clientId);
 
-    public Task<string?> GetTokenAsync(int clientId);
+    public void SetToken(int clientId, string value);
 
-    public Task SetTokenAsync(int clientId, string token);
+    public string? GetUserAgent(int clientId);
 
-    public Task<string?> GetUserAgentAsync(int clientId);
-
-    public Task SetUserAgentAsync(int clientId, string token);
+    public void SetUserAgent(int clientId, string value);
     
     
 }

@@ -13,9 +13,9 @@ public sealed class Client : IDisposable
 {
     private readonly SocketIO socket;
 
-    private string? Token => settingsService.GetTokenAsync(ClientId).Result;
+    private string? Token;
     
-    private string? UserAgent => settingsService.GetUserAgentAsync(ClientId).Result;
+    private string? UserAgent;
 
     private readonly long currentTimestamp;
     private int userId;
@@ -128,6 +128,17 @@ public sealed class Client : IDisposable
 
     public async Task Connect()
     {
+        Token = settingsService.GetToken(ClientId);
+        UserAgent = settingsService.GetUserAgent(ClientId);
+        if (settingsService.GetUserAgent(ClientId) is var ua && ua != UserAgent)
+        {
+            socket.Options.ExtraHeaders = new Dictionary<string, string>
+            {
+                { "User-Agent", ua },
+                { "Origin", "https://nekto.me" },
+            };
+            UserAgent = ua;
+        }
         await socket.ConnectAsync();
     }
 
